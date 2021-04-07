@@ -1,0 +1,60 @@
+#!/bin/bash -e
+
+set -Eeo pipefail
+
+AWS_REGION=eu-west-2
+AWS_DEFAULT_REGION=$AWS_REGION
+DOCKER_REGISTRY=327778747031.dkr.ecr.eu-west-2.amazonaws.com
+PRM_REPO_MHS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+if [[ -z "$GO_MATERIAL_URL_MHS" ]]; then
+  INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY="${INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY:-integration-adaptor-mhs}"
+else
+  # we are running on gocd. use a material checkout next to current repo
+  INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY="$PRM_REPO_MHS_DIR/../integration-adaptor-mhs"
+fi
+
+if [[ ! -d $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY ]]; then
+  echo "You need a checkout of integration-adaptor-mhs. If you have one, set the path in INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY"
+fi
+
+function check_env {
+  if [[ -z "${NHS_ENVIRONMENT}" ]]; then
+    echo "Must set NHS_ENVIRONMENT"
+    exit 1
+  fi
+}
+
+function docker_login {
+  eval $(dojo "aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION")
+}
+
+command="$1"
+case "${command}" in
+  build_docker)
+    IMAGE_PREFIX=$2
+    if [ -z "$IMAGE_PREFIX" ]; then
+      echo "Please specify one of the images to be built: inbound, outbound, or route"
+      exit 5
+    fi
+    BUILD_TAG=$(cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY && git rev-parse HEAD | cut -c 1-8)
+    docker_login
+    #TODO build base image first
+    BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
+    cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
+    DOCKER_DIRECTORY=$IMAGE_PREFIX
+    if [[ $IMAGE_PREFIX == "route" ]]; then
+      DOCKER_DIRECTORY=spineroutelookup
+    fi
+    docker build \
+     --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
+     -t $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG \
+     -f mhs/$DOCKER_DIRECTORY/Dockerfile .
+
+    docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    ;;
+  *)
+      echo "Invalid command: '${command}'"
+      exit 1
+      ;;
+esac
+set +e

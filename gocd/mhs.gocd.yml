@@ -1,0 +1,28 @@
+format_version: 4
+pipelines:
+  "prm-repo-mhs":
+    group: mhs
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+        destination: prm-repo-mhs
+      mhs:
+        # TODO: replace by fork repo
+        git: https://github.com/tomzo-nhs/integration-adaptor-mhs.git
+        branch: repo
+        destination: integration-adaptor-mhs
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            route:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    working_directory: prm-repo-mhs
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks build_docker route
