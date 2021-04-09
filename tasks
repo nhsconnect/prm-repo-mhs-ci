@@ -28,6 +28,15 @@ function docker_login {
   eval $(dojo "aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION")
 }
 
+function build_dns_overlay {
+  BASE_IMAGE=$1
+  BUILT_IMAGE_URL=$2
+  cd $PRM_REPO_MHS_DIR/docker-scripts
+  docker build \
+    -t $BUILT_IMAGE_URL \
+    --build-arg BASE_IMAGE=$BASE_IMAGE .
+}
+
 command="$1"
 case "${command}" in
   build_docker)
@@ -37,7 +46,9 @@ case "${command}" in
       exit 5
     fi
     BUILD_TAG=$(cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY && git rev-parse HEAD | cut -c 1-8)
-    docker_login
+    if [[ "$local_build" != "true" ]]; then
+      docker_login
+    fi
     #TODO build base image first
     BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
@@ -47,10 +58,14 @@ case "${command}" in
     fi
     docker build \
      --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
-     -t $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG \
+     -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
      -f mhs/$DOCKER_DIRECTORY/Dockerfile .
 
-    docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    build_dns_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+
+    if [[ "$local_build" != "true" ]]; then
+      docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    fi
     ;;
   *)
       echo "Invalid command: '${command}'"
