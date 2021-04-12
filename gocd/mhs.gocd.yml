@@ -13,7 +13,20 @@ pipelines:
         branch: repo
         destination: integration-adaptor-mhs
     stages:
-      - build:
+      - test:
+          clean_workspace: true
+          jobs:
+            route:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    working_directory: prm-repo-mhs
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks unit_test route
+      - build_docker:
           clean_workspace: true
           jobs:
             route:
