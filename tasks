@@ -69,21 +69,17 @@ case "${command}" in
       docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
     fi
     ;;
-  _unit_test)
+  unit_test)
     MHS_COMPONENT=$2
     if [ -z "$MHS_COMPONENT" ]; then
       echo "Please specify one of the components to test: inbound, outbound, or route"
       exit 5
     fi
     if [[ $MHS_COMPONENT == "route" ]]; then
-      DOCKER_DIRECTORY=spineroutelookup
+      MHS_DIRECTORY=spineroutelookup
     fi
-    cd integration-adaptor-mhs/mhs/spineroutelookup
-    pipenv install --dev
-    pipenv run unittests
-    ;;
-  unit_test)
-    dojo -c Dojofile-py "./tasks _unit_test $2"
+    cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
+    dojo -c ${PRM_REPO_MHS_DIR}/Dojofile-py "cd mhs/$MHS_DIRECTORY && pipenv install --dev && pipenv run unittests"
     ;;
   *)
       echo "Invalid command: '${command}'"
