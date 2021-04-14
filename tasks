@@ -64,6 +64,7 @@ case "${command}" in
      -f mhs/$DOCKER_DIRECTORY/Dockerfile .
 
     build_dns_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    docker run --rm -v $PRM_REPO_MHS_DIR:/test --entrypoint sh $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG -c "openssl verify -verbose /test/test-assets/sds-ldaps.crt"
 
     if [[ "$local_build" != "true" ]]; then
       docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
