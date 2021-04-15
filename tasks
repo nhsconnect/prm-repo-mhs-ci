@@ -76,6 +76,7 @@ case "${command}" in
       echo "Please specify one of the components to test: inbound, outbound, or route"
       exit 5
     fi
+    MHS_DIRECTORY=$MHS_COMPONENT
     if [[ $MHS_COMPONENT == "route" ]]; then
       MHS_DIRECTORY=spineroutelookup
     fi
