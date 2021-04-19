@@ -8,4 +8,5 @@ CMD ["pipenv", "run", "start"]
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 COPY ptli-certs/*.crt /usr/local/share/ca-certificates/
+COPY deductions/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
