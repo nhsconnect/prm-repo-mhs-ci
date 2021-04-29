@@ -59,3 +59,13 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks build_docker outbound
+            inbound:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    working_directory: prm-repo-mhs
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks build_docker inbound
