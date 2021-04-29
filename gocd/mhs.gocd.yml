@@ -36,6 +36,16 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks unit_test outbound
+            inbound:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    working_directory: prm-repo-mhs
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks unit_test inbound
       - build_docker:
           clean_workspace: true
           jobs:
