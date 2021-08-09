@@ -10,7 +10,7 @@ pipelines:
       mhs:
         # TODO: replace by fork repo
         git: https://github.com/tomzo-nhs/integration-adaptor-mhs.git
-        branch: repo
+        branch: mhs-outbound-with-sds
         destination: integration-adaptor-mhs
     stages:
       - test:
