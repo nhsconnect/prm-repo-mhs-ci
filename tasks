@@ -42,7 +42,7 @@ case "${command}" in
   build_docker)
     IMAGE_PREFIX=$2
     if [ -z "$IMAGE_PREFIX" ]; then
-      echo "Please specify one of the images to be built: inbound, outbound, or route"
+      echo "Please specify one of the images to be built: inbound or outbound"
       exit 5
     fi
     UPSTREAM_GIT_HASH=$(cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY && git rev-parse HEAD | cut -c 1-8)
@@ -55,9 +55,6 @@ case "${command}" in
     BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
     DOCKER_DIRECTORY=$IMAGE_PREFIX
-    if [[ $IMAGE_PREFIX == "route" ]]; then
-      DOCKER_DIRECTORY=spineroutelookup
-    fi
     docker build \
      --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
      -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
@@ -73,13 +70,10 @@ case "${command}" in
   unit_test)
     MHS_COMPONENT=$2
     if [ -z "$MHS_COMPONENT" ]; then
-      echo "Please specify one of the components to test: inbound, outbound, or route"
+      echo "Please specify one of the components to test: inbound or outbound"
       exit 5
     fi
     MHS_DIRECTORY=$MHS_COMPONENT
-    if [[ $MHS_COMPONENT == "route" ]]; then
-      MHS_DIRECTORY=spineroutelookup
-    fi
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
     dojo -c ${PRM_REPO_MHS_DIR}/Dojofile-py "cd mhs/$MHS_DIRECTORY && pipenv install --dev && pipenv run unittests"
     ;;

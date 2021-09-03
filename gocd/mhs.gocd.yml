@@ -16,16 +16,6 @@ pipelines:
       - test:
           clean_workspace: true
           jobs:
-            route:
-              resources:
-                - docker
-              tasks:
-                - exec:
-                    working_directory: prm-repo-mhs
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks unit_test route
             outbound:
               resources:
                 - docker
@@ -49,16 +39,6 @@ pipelines:
       - build_docker:
           clean_workspace: true
           jobs:
-            route:
-              resources:
-                - docker
-              tasks:
-                - exec:
-                    working_directory: prm-repo-mhs
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks build_docker route
             outbound:
               resources:
                 - docker
