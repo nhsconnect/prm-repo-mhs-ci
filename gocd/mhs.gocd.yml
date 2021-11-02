@@ -9,7 +9,7 @@ pipelines:
         destination: prm-repo-mhs
       mhs:
         git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-        branch: develop
+        branch: feature/NIAD-1487-sds-api-test
         destination: integration-adaptor-mhs
     stages:
       - test:
