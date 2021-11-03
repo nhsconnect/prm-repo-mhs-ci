@@ -14,49 +14,34 @@ pipelines:
         branch: mhs-outbound-with-sds
         destination: integration-adaptor-mhs
     stages:
-      - test:
-          clean_workspace: true
-          jobs:
-            outbound:
-              resources:
-                - docker
-              tasks:
-                - exec:
-                    working_directory: prm-repo-mhs
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks unit_test outbound
-            inbound:
-              resources:
-                - docker
-              tasks:
-                - exec:
-                    working_directory: prm-repo-mhs
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks unit_test inbound
       - build_docker:
           clean_workspace: true
           jobs:
             outbound:
               resources:
                 - docker
+              artifacts:
+                - build:
+                    source: prm-repo-mhs/imagerc
+                    destination: imagerc
               tasks:
                 - exec:
                     working_directory: prm-repo-mhs
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks build_docker outbound
+                      - ./tasks import_docker outbound
             inbound:
               resources:
                 - docker
+              artifacts:
+                - build:
+                    source: prm-repo-mhs/imagerc
+                    destination: imagerc
               tasks:
                 - exec:
                     working_directory: prm-repo-mhs
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks build_docker inbound
+                      - ./tasks import_docker inbound

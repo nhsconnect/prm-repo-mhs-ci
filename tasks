@@ -1,6 +1,14 @@
 #!/bin/bash -e
 
-set -Eeo pipefail
+DOCKER_OPS_VERSION="2.0.1"
+DOCKER_OPS_FILE="ops/docker-ops-${DOCKER_OPS_VERSION}"
+mkdir -p ops
+if [[ ! -f $DOCKER_OPS_FILE ]];then
+  wget --quiet -O $DOCKER_OPS_FILE https://github.com/kudulab/docker-ops/releases/download/${DOCKER_OPS_VERSION}/docker-ops
+fi
+source $DOCKER_OPS_FILE
+
+set -Eeo pipefail +u
 
 AWS_REGION=eu-west-2
 AWS_DEFAULT_REGION=$AWS_REGION
@@ -39,6 +47,23 @@ function build_dns_overlay {
 
 command="$1"
 case "${command}" in
+  import_docker) # pulls offical release from dockerhub and pushes to ECR
+    IMAGE_PREFIX=$2
+    if [ -z "$IMAGE_PREFIX" ]; then
+      echo "Please specify one of the images to be built: inbound or outbound"
+      exit 5
+    fi
+    UPSTREAM_TAG=1.0.3
+    REPO_GIT_HASH=$(git rev-parse HEAD | cut -c 1-8)
+    BUILD_TAG="${UPSTREAM_TAG}-${REPO_GIT_HASH}"
+    docker pull nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG}
+    docker tag nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG} $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    if [[ "$local_build" != "true" ]]; then
+      docker_login
+      docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    fi
+    docker_ops::create_imagerc "imagerc" "${IMAGE_PREFIX}" "mhs-${IMAGE_PREFIX}" "$BUILD_TAG" "$DOCKER_REGISTRY"
+    ;;
   build_docker)
     IMAGE_PREFIX=$2
     if [ -z "$IMAGE_PREFIX" ]; then
