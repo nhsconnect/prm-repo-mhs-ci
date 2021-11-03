@@ -92,6 +92,8 @@ case "${command}" in
     if [[ "$local_build" != "true" ]]; then
       docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
     fi
+    cd $PRM_REPO_MHS_DIR
+    docker_ops::create_imagerc "imagerc" "${IMAGE_PREFIX}" "mhs-${IMAGE_PREFIX}" "$BUILD_TAG" "$DOCKER_REGISTRY"
     ;;
   unit_test)
     MHS_COMPONENT=$2

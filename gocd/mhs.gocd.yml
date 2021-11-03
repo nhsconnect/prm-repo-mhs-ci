@@ -30,18 +30,18 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks import_docker outbound
+                      - ./tasks build_docker outbound
             inbound:
               resources:
                 - docker
               artifacts:
                 - build:
                     source: prm-repo-mhs/imagerc
-                    destination: 
+                    destination:
               tasks:
                 - exec:
                     working_directory: prm-repo-mhs
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks import_docker inbound
+                      - ./tasks build_docker inbound
