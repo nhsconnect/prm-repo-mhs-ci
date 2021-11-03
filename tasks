@@ -36,13 +36,14 @@ function docker_login {
   eval $(dojo "aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION")
 }
 
-function build_dns_overlay {
+function build_docker_overlay {
   BASE_IMAGE=$1
   BUILT_IMAGE_URL=$2
   cd $PRM_REPO_MHS_DIR/docker-scripts
   docker build \
     -t $BUILT_IMAGE_URL \
     --build-arg BASE_IMAGE=$BASE_IMAGE .
+  cd $PRM_REPO_MHS_DIR
 }
 
 command="$1"
@@ -57,7 +58,7 @@ case "${command}" in
     REPO_GIT_HASH=$(git rev-parse HEAD | cut -c 1-8)
     BUILD_TAG="${UPSTREAM_TAG}-${REPO_GIT_HASH}"
     docker pull nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG}
-    docker tag nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG} $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    build_docker_overlay nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG} $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
     if [[ "$local_build" != "true" ]]; then
       docker_login
       docker push $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
@@ -85,7 +86,7 @@ case "${command}" in
      -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
      -f mhs/$DOCKER_DIRECTORY/Dockerfile .
 
-    build_dns_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+    build_docker_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
     docker run --rm -v $PRM_REPO_MHS_DIR:/test --entrypoint sh $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG -c "openssl verify -verbose /test/test-assets/sds-ldaps.crt"
 
     if [[ "$local_build" != "true" ]]; then
