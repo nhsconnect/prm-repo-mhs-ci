@@ -23,7 +23,7 @@ pipelines:
               artifacts:
                 - build:
                     source: prm-repo-mhs/imagerc
-                    destination: imagerc
+                    destination:
               tasks:
                 - exec:
                     working_directory: prm-repo-mhs
@@ -37,7 +37,7 @@ pipelines:
               artifacts:
                 - build:
                     source: prm-repo-mhs/imagerc
-                    destination: imagerc
+                    destination: 
               tasks:
                 - exec:
                     working_directory: prm-repo-mhs
