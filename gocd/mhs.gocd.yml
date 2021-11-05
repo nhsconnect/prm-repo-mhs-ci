@@ -8,10 +8,10 @@ pipelines:
         type: configrepo
         destination: prm-repo-mhs
       mhs:
-#        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-#        branch: feature/NIAD-1487-sds-api-test
-        git: https://github.com/tomzo-nhs/integration-adaptor-mhs.git
-        branch: mhs-outbound-with-sds
+        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
+        branch: feature/NIAD-1487-sds-api-test
+        # git: https://github.com/tomzo-nhs/integration-adaptor-mhs.git
+        # branch: mhs-outbound-with-sds
         destination: integration-adaptor-mhs
     stages:
       - build_docker:
