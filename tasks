@@ -46,6 +46,16 @@ function build_docker_overlay {
   cd $PRM_REPO_MHS_DIR
 }
 
+function create_our_mhs_build_tag {
+  if [[ -z "${GO_PIPELINE_LABEL}" ]]; then
+    UPSTREAM_GIT_HASH=$(cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY && git rev-parse HEAD | cut -c 1-8)
+    REPO_GIT_HASH=$(git rev-parse HEAD | cut -c 1-8)
+    export BUILD_TAG="${UPSTREAM_GIT_HASH}-${REPO_GIT_HASH}"
+  else
+    export BUILD_TAG=${GO_PIPELINE_LABEL}
+  fi  
+}
+
 command="$1"
 case "${command}" in
   import_docker) # pulls offical release from dockerhub and pushes to ECR
@@ -71,9 +81,7 @@ case "${command}" in
       echo "Please specify one of the images to be built: inbound or outbound"
       exit 5
     fi
-    UPSTREAM_GIT_HASH=$(cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY && git rev-parse HEAD | cut -c 1-8)
-    REPO_GIT_HASH=$(git rev-parse HEAD | cut -c 1-8)
-    BUILD_TAG="${UPSTREAM_GIT_HASH}-${REPO_GIT_HASH}"
+    create_our_mhs_build_tag
     if [[ "$local_build" != "true" ]]; then
       docker_login
     fi
