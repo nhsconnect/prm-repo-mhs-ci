@@ -30,7 +30,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks build_docker outbound
+                      - ./tasks import_docker outbound
             inbound:
               resources:
                 - docker
@@ -44,4 +44,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks build_docker inbound
+                      - ./tasks import_docker inbound
