@@ -64,7 +64,7 @@ case "${command}" in
       echo "Please specify one of the images to be built: inbound or outbound"
       exit 5
     fi
-    UPSTREAM_TAG=1.2.0
+    UPSTREAM_TAG=1.2.1
     REPO_GIT_HASH=$(git rev-parse HEAD | cut -c 1-8)
     BUILD_TAG="${UPSTREAM_TAG}-${REPO_GIT_HASH}"
     docker pull nhsdev/nia-mhs-${IMAGE_PREFIX}:${UPSTREAM_TAG}
