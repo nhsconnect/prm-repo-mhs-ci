@@ -26,9 +26,9 @@ function download_util() {
   local UTIL_VERSION=$1
   local UTIL_FILENAME=$2
 
-  local UTIL_FILEPATH="utils/$UTIL_VERSION/$UTIL_FILENAME"
+  local UTIL_FILEPATH="docker-scripts/utils/$UTIL_VERSION/$UTIL_FILENAME"
 
-  mkdir -p "utils/$UTIL_VERSION"
+  mkdir -p "docker-scripts/utils/$UTIL_VERSION"
   if [[ ! -f $UTIL_FILEPATH ]];then
     wget --quiet -O $UTIL_FILEPATH https://github.com/nhsconnect/prm-deductions-support-infra/releases/download/${UTIL_VERSION}/${UTIL_FILENAME}
   fi

@@ -12,5 +12,5 @@ RUN update-ca-certificates
 
 ARG UTILS_VERSION
 RUN test -n "$UTILS_VERSION"
-COPY ../../utils/$UTILS_VERSION/run-with-redaction.sh ./utils/
-COPY ../..utils/$UTILS_VERSION/redactor              ./utils/
+COPY utils/$UTILS_VERSION/run-with-redaction.sh ./utils/
+COPY utils/$UTILS_VERSION/redactor              ./utils/
