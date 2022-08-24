@@ -129,12 +129,22 @@ case "${command}" in
     BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
     DOCKER_DIRECTORY=$IMAGE_PREFIX
+
+    echo Building base image...
     docker build \
      --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
      -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
      -f mhs/$DOCKER_DIRECTORY/Dockerfile .
 
+    echo Built base image in $PWD, moving back to mhs-ci repo dir $PRM_REPO_MHS_DIR
+    cd $PRM_REPO_MHS_DIR
+    echo Fetching redaction utils in $PWD
     fetch_redaction_utils
+    echo Content of docker-scripts
+    ls docker-scripts
+    echo All content of docker-scripts/utils
+    ls -lR docker-scripts/utils
+
     build_docker_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
     docker run --rm -v $PRM_REPO_MHS_DIR:/test --entrypoint sh $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG -c "openssl verify -verbose /test/test-assets/sds-ldaps.crt"
 
