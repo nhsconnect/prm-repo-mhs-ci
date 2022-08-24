@@ -1,6 +1,6 @@
 format_version: 4
 pipelines:
-  "prm-repo-mhs":
+  prm-repo-mhs:
     group: mhs
     label_template: "${COUNT}-${mhs[:8]}-${git[:8]}"
     materials:
@@ -8,11 +8,11 @@ pipelines:
         type: configrepo
         destination: prm-repo-mhs
       mhs:
-        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-        branch: feature/NIAD-1487-sds-api-test
-#        git: https://github.com/tomzo-nhs/integration-adaptor-mhs.git
-#        branch: mhs-outbound-with-sds
+#        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
+#        branch: feature/NIAD-1487-sds-api-test
         destination: integration-adaptor-mhs
+        git: https://github.com/danmoorenhs/integration-adaptor-mhs-patched.git
+        branch: PRMT-2752-ehr-out-fixes
     stages:
       - build_docker:
           clean_workspace: true
@@ -30,7 +30,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks import_docker outbound
+                      - ./tasks build_docker outbound
             inbound:
               resources:
                 - docker
@@ -44,4 +44,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks import_docker inbound
+                      - ./tasks build_docker inbound
