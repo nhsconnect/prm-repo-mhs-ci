@@ -8,11 +8,8 @@ pipelines:
         type: configrepo
         destination: prm-repo-mhs
       mhs:
-#        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-#        branch: feature/NIAD-1487-sds-api-test
+        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
         destination: integration-adaptor-mhs
-        git: https://github.com/danmoorenhs/integration-adaptor-mhs-patched.git
-        branch: PRMT-2752-ehr-out-fixes
     stages:
       - build_docker:
           clean_workspace: true

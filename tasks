@@ -125,18 +125,19 @@ case "${command}" in
     if [[ "$local_build" != "true" ]]; then
       docker_login
     fi
-    #TODO build base image first
-    BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
+
+    # build base image
+    BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"  # Dan Rosie Syed Jessy update to 1.0.2 next **
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
     DOCKER_DIRECTORY=$IMAGE_PREFIX
 
-    echo Building base image...
+    echo Building mhs-inbound or mhs-outbound as per their own Dockerfile
     docker build \
      --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
      -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
      -f mhs/$DOCKER_DIRECTORY/Dockerfile .
 
-    echo Built base image in $PWD, moving back to mhs-ci repo dir $PRM_REPO_MHS_DIR
+    echo Built their image in $PWD, moving back to mhs-ci repo dir $PRM_REPO_MHS_DIR
     cd $PRM_REPO_MHS_DIR
     echo Fetching redaction utils in $PWD
     fetch_redaction_utils
@@ -145,7 +146,10 @@ case "${command}" in
     echo All content of docker-scripts/utils
     ls -lR docker-scripts/utils
 
+    echo Building our mhs container on base of their mhs-inbound or mhs-outbound
     build_docker_overlay mhs-${IMAGE_PREFIX}:$BUILD_TAG $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG
+
+    echo Check at least some of our certs are in good order
     docker run --rm -v $PRM_REPO_MHS_DIR:/test --entrypoint sh $DOCKER_REGISTRY/mhs-${IMAGE_PREFIX}:$BUILD_TAG -c "openssl verify -verbose /test/test-assets/sds-ldaps.crt"
 
     if [[ "$local_build" != "true" ]]; then
