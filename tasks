@@ -125,8 +125,7 @@ case "${command}" in
     if [[ "$local_build" != "true" ]]; then
       docker_login
     fi
-    #TODO build base image first
-    BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.1}"
+    BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-1.0.2}"
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
     DOCKER_DIRECTORY=$IMAGE_PREFIX
 
