@@ -9,7 +9,7 @@ pipelines:
         destination: prm-repo-mhs
       mhs:
         git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-        branch: develop
+        branch: main
         destination: integration-adaptor-mhs
     stages:
       - build_docker:
