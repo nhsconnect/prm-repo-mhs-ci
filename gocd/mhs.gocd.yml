@@ -8,8 +8,8 @@ pipelines:
         type: configrepo
         destination: prm-repo-mhs
       mhs:
-        git: https://github.com/nhsconnect/integration-adaptor-mhs.git
-        branch: main
+        git: https://github.com/NHSDigital/integration-adaptor-mhs.git
+        branch: NIAD-3124
         destination: integration-adaptor-mhs
     stages:
       - build_docker:
