@@ -9,7 +9,7 @@ pipelines:
         destination: prm-repo-mhs
       mhs:
         git: https://github.com/NHSDigital/integration-adaptor-mhs.git
-        branch: NIAD-3124
+        branch: main
         destination: integration-adaptor-mhs
     stages:
       - build_docker:
