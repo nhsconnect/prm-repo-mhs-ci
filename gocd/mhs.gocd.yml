@@ -9,11 +9,11 @@ pipelines:
         destination: prm-repo-mhs
       mhs:
         git: https://github.com/NHSDigital/integration-adaptor-mhs.git
-        branch: release/1.3.2
+        branch: NIAD-3188
         destination: integration-adaptor-mhs
     stages:
-      # - build_docker:
-      - import_docker:
+      - build_docker:
+      # - import_docker:
           clean_workspace: true
           jobs:
             outbound:
@@ -29,8 +29,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      # - ./tasks build_docker outbound
-                      - ./tasks import_docker outbound
+                      - ./tasks build_docker outbound
+                      # - ./tasks import_docker outbound
             inbound:
               resources:
                 - docker
@@ -44,5 +44,5 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      # - ./tasks build_docker inbound
-                      - ./tasks import_docker inbound
+                      - ./tasks build_docker inbound
+                      # - ./tasks import_docker inbound
