@@ -1,1 +1,1 @@
-DOJO_DOCKER_IMAGE="nhsdev/mhs-python-dojo:c0e1a9f1f5d2323dcf135d4114063ff0739382d3"
+DOJO_DOCKER_IMAGE="nhsdev/mhs-python-dojo:c9cc1e8410599cd2c9252f4f67c7f21d43765800"

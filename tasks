@@ -135,7 +135,7 @@ case "${command}" in
     docker build \
      --build-arg BASE_IMAGE_TAG=$BASE_IMAGE_TAG \
      -t mhs-${IMAGE_PREFIX}:$BUILD_TAG \
-     -f mhs/$DOCKER_DIRECTORY/Dockerfile .
+     -f docker/$DOCKER_DIRECTORY/Dockerfile .
 
     echo Built their image in $PWD, moving back to mhs-ci repo dir $PRM_REPO_MHS_DIR
     cd $PRM_REPO_MHS_DIR
@@ -166,7 +166,7 @@ case "${command}" in
     fi
     MHS_DIRECTORY=$MHS_COMPONENT
     cd $INTEGRATION_ADAPTORS_MHS_REPO_DIRECTORY
-    dojo -c ${PRM_REPO_MHS_DIR}/Dojofile-py "cd mhs/$MHS_DIRECTORY && pipenv install --dev && pipenv run unittests"
+    dojo -c ${PRM_REPO_MHS_DIR}/Dojofile-py "cd docker/$MHS_DIRECTORY && pipenv install --dev && pipenv run unittests"
     ;;
   *)
       echo "Invalid command: '${command}'"
